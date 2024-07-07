@@ -2,7 +2,7 @@ document.getElementById('sale-form').addEventListener('submit', function(event) 
   event.preventDefault();
 
   const nome = document.getElementById('nome').value;
-  const data = document.getElementById('data').value;
+  const data = new Date(document.getElementById('data').value).toISOString();
   const tipo = document.getElementById('tipo').value;
   const cupom = document.getElementById('cupom').value;
 
@@ -50,3 +50,9 @@ function formatDate(dateString) {
 }
 
 document.addEventListener('DOMContentLoaded', loadSales);
+
+document.getElementById('download-button').addEventListener('click', function() {
+  const table = document.getElementById('sales-table');
+  const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+  XLSX.writeFile(wb, 'sales.xlsx');
+});
