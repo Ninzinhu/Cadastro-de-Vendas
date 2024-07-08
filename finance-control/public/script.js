@@ -26,6 +26,7 @@ function loadSales() {
       data.forEach(sale => {
           addSaleToTable(sale);
       });
+      updateMetrics();
   });
 }
 
