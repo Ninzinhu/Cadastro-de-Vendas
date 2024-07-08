@@ -24,6 +24,32 @@ app.post('/add-sale', (req, res) => {
   });
 });
 
+// Endpoint para calcular métricas
+app.get('/metrics', async (req, res) => {
+  try {
+      const snapshot = await db.ref('vendas').once('value');
+      const vendas = snapshot.val();
+
+      let totalGains = 0;
+      let totalCount = 0;
+
+      if (vendas) {
+          totalCount = Object.keys(vendas).length;
+          for (const id in vendas) {
+              totalGains += parseFloat(vendas[id].valor);
+          }
+      }
+
+      res.json({
+          totalGains: totalGains.toFixed(2),
+          totalCount: totalCount
+      });
+  } catch (error) {
+      console.error('Erro ao calcular métricas:', error);
+      res.status(500).json({ error: 'Erro ao calcular métricas' });
+  }
+});
+
 app.get('/sales', (req, res) => {
   db.all("SELECT * FROM vendas", [], (err, rows) => {
     if (err) {
