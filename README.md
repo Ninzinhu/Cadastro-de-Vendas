@@ -18,7 +18,13 @@
 </p>
 
 
-![Assista ao vídeo](https://github.com/ninzinhu/Cadastro-de-Vendas/finance-control/Apresentação.mp4)
+## Assista ao Vídeo de Demonstração 
+<p align="center">
+
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AEu4NdSYrY8?si=NJsZrkthWyxvgwE3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</p>
 
 
 
