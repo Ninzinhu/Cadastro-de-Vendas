@@ -8,7 +8,7 @@ const port = 3000;
 
 
 // Inicializa o Firebase Admin SDK
-const serviceAccount = require('./serviceAccountKey.json'); 
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY); 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://financecontrol-c2228-default-rtdb.firebaseio.com/' 
