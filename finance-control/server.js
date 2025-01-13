@@ -7,21 +7,12 @@ const port = 3000;
 
 
 
-// Carrega as variáveis de ambiente do arquivo .env
-require('dotenv').config();
-const admin = require('firebase-admin');
-
-// Parse da variável de ambiente que contém a chave de serviço do Firebase
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-
-// Inicializa o Firebase com a chave de serviço e a URL do banco de dados
+// Inicializa o Firebase Admin SDK
+const serviceAccount = require('./serviceAccountKey.json'); 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://financecontrol-c2228-default-rtdb.firebaseio.com/'
+  databaseURL: 'https://financecontrol-c2228-default-rtdb.firebaseio.com/' 
 });
-
-
-
 
 const db = admin.database();
 
