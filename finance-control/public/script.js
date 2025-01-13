@@ -7,27 +7,28 @@ document.getElementById('sale-form').addEventListener('submit', function(event) 
   const cupom = document.getElementById('cupom').value;
 
   fetch('/add-sale', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ nome, data, tipo, cupom })
-  }).then(response => response.json())
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ nome, data, tipo, cupom })
+  })
+  .then(response => response.json())
   .then(data => {
-      addSaleToTable({ id: data.id, nome, data, tipo, cupom });
-      document.getElementById('sale-form').reset();
+    addSaleToTable({ id: data.id, nome, data, tipo, cupom });
+    document.getElementById('sale-form').reset();
   });
 });
 
 function loadSales() {
   fetch('/sales')
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       data.forEach(sale => {
-          addSaleToTable(sale);
+        addSaleToTable(sale);
       });
       updateMetrics();
-  });
+    });
 }
 
 function addSaleToTable(sale) {
@@ -39,21 +40,20 @@ function addSaleToTable(sale) {
   const cell3 = newRow.insertCell(2);
   const cell4 = newRow.insertCell(3);
 
-  cell1.innerHTML = sale.nome;
-  cell2.innerHTML = formatDate(sale.data);
-  cell3.innerHTML = sale.tipo;
-  cell4.innerHTML = sale.cupom;
+  cell1.textContent = sale.nome;
+  cell2.textContent = new Date(sale.data).toLocaleDateString();
+  cell3.textContent = sale.tipo;
+  cell4.textContent = sale.cupom;
 }
 
-function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+function updateMetrics() {
+  fetch('/metrics')
+    .then(response => response.json())
+    .then(metrics => {
+      document.getElementById('total-gains').textContent = `Total Gains: $${metrics.totalGains}`;
+      document.getElementById('total-count').textContent = `Total Sales: ${metrics.totalCount}`;
+    });
 }
 
-document.addEventListener('DOMContentLoaded', loadSales);
-
-document.getElementById('download-button').addEventListener('click', function() {
-  const table = document.getElementById('sales-table');
-  const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-  XLSX.writeFile(wb, 'sales.xlsx');
-});
+// Carrega as vendas ao iniciar
+loadSales();

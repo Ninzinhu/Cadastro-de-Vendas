@@ -13,7 +13,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
+    "firebase-admin": "^13.0.2",
     "mongoose": "^8.4.5",
     "sqlite3": "^5.1.7",
     "xlsx": "^0.18.5"

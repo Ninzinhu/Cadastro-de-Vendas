@@ -1,62 +1,85 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
+const admin = require('firebase-admin');
 const app = express();
 const port = 3000;
+
+
+
+
+// Carrega as variáveis de ambiente do arquivo .env
+require('dotenv').config();
+const admin = require('firebase-admin');
+
+// Parse da variável de ambiente que contém a chave de serviço do Firebase
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+
+// Inicializa o Firebase com a chave de serviço e a URL do banco de dados
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://financecontrol-c2228-default-rtdb.firebaseio.com/'
+});
+
+
+
+
+const db = admin.database();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-let db = new sqlite3.Database(':memory:');
-
-db.serialize(() => {
-  db.run("CREATE TABLE vendas (id INTEGER PRIMARY KEY, nome TEXT, data TEXT, tipo TEXT, cupom TEXT)");
-});
-
+// Endpoint para adicionar uma venda
 app.post('/add-sale', (req, res) => {
   const { nome, data, tipo, cupom } = req.body;
-  db.run(`INSERT INTO vendas(nome, data, tipo, cupom) VALUES(?, ?, ?, ?)`, [nome, data, tipo, cupom], function(err) {
-    if (err) {
-      return console.log(err.message);
-    }
-    res.send({ id: this.lastID });
-  });
+  const saleRef = db.ref('vendas').push(); // Cria uma nova entrada no Firebase
+  saleRef.set({ nome, data, tipo, cupom })
+    .then(() => {
+      res.send({ id: saleRef.key }); // Retorna o ID gerado pelo Firebase
+    })
+    .catch((err) => {
+      console.error('Erro ao adicionar venda:', err);
+      res.status(500).json({ error: 'Erro ao adicionar venda' });
+    });
+});
+
+// Endpoint para buscar todas as vendas
+app.get('/sales', (req, res) => {
+  db.ref('vendas').once('value')
+    .then((snapshot) => {
+      const vendas = snapshot.val();
+      res.json(vendas ? Object.values(vendas) : []); // Retorna um array de vendas
+    })
+    .catch((err) => {
+      console.error('Erro ao buscar vendas:', err);
+      res.status(500).json({ error: 'Erro ao buscar vendas' });
+    });
 });
 
 // Endpoint para calcular métricas
-app.get('/metrics', async (req, res) => {
-  try {
-      const snapshot = await db.ref('vendas').once('value');
+app.get('/metrics', (req, res) => {
+  db.ref('vendas').once('value')
+    .then((snapshot) => {
       const vendas = snapshot.val();
-
       let totalGains = 0;
       let totalCount = 0;
 
       if (vendas) {
-          totalCount = Object.keys(vendas).length;
-          for (const id in vendas) {
-              totalGains += parseFloat(vendas[id].valor);
-          }
+        totalCount = Object.keys(vendas).length;
+        Object.values(vendas).forEach((venda) => {
+          totalGains += parseFloat(venda.valor || 0); // Supondo que cada venda tenha um campo "valor"
+        });
       }
 
       res.json({
-          totalGains: totalGains.toFixed(2),
-          totalCount: totalCount
+        totalGains: totalGains.toFixed(2),
+        totalCount: totalCount
       });
-  } catch (error) {
-      console.error('Erro ao calcular métricas:', error);
+    })
+    .catch((err) => {
+      console.error('Erro ao calcular métricas:', err);
       res.status(500).json({ error: 'Erro ao calcular métricas' });
-  }
-});
-
-app.get('/sales', (req, res) => {
-  db.all("SELECT * FROM vendas", [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    res.json(rows);
-  });
+    });
 });
 
 app.listen(port, () => {
