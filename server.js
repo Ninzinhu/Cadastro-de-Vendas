@@ -8,17 +8,21 @@ const port = 3000;
 
 
 // Inicializa o Firebase Admin SDK
-require('dotenv').config();
+
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount), databaseURL: 'https://financecontrol-c2228-default-rtdb.firebaseio.com/' });
 
 
 
 const db = admin.database();
-
+// Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 // Endpoint para adicionar uma venda
 app.post('/add-sale', (req, res) => {
