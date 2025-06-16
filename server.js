@@ -5,7 +5,6 @@ const path = require('path');
 const app = express();
 // const port = 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Inicializa o Firebase Admin SDK
@@ -24,8 +23,6 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
-
-
 
 // Endpoint para adicionar uma venda
 app.post('/add-sale', (req, res) => {
