@@ -1,10 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+const path = require('path');
 const app = express();
-const port = 3000;
+// const port = 3000;
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Inicializa o Firebase Admin SDK
@@ -23,6 +24,8 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
+
+module.exports = app;
 
 // Endpoint para adicionar uma venda
 app.post('/add-sale', (req, res) => {
