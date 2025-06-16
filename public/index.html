@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+</head>
+<body>
+<header>
+        <div class="header-content">
+            <h1>Controle Financeiro</h1>
+            <button id="metrics-btn" class="metrics-button">
+                <span id="total-gains">Total: R$ 0.00</span>
+                <i class="chart-icon">📊</i>
+            </button>
+        </div>
+    </header>
+
+
+    
+    <main class="main-container">
+        <!-- Modal de Estatísticas -->
+        <div id="metrics-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Estatísticas de Vendas</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="chart-container">
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total de Vendas</h3>
+                            <p id="total-sales">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Vendas por Tipo</h3>
+                            <ul id="sales-by-type"></ul>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <main class="main-container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Cadastrar Nova Venda</h2>
+            </div>
+            <div class="form-container">
+                <form id="sale-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" name="nome" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="data">Data:</label>
+                        <input type="date" id="data" name="data" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo:</label>
+                        <input type="text" id="tipo" name="tipo" class="form-control" required />
+                    </div>
+                    <div class="form-group cupom-group">
+                        <label for="cupom">Cupom:</label>
+                        <input type="text" id="cupom" name="cupom" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                     <label for="valor">Valor:</label>
+                     <input type="number" id="valor" name="valor" step="0.01" class="form-control" required>
+                    </div>
+                    <div class="form-group button-group">
+                        <button type="submit" class="btn btn-primary">Cadastrar Venda</button>
+                    </div>
+
+                     
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Registro de Vendas</h2>
+                <button id="download-button" class="btn btn-primary">Baixar Planilha</button>
+            </div>
+            <div class="table-container">
+                <table id="sales-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Cupom</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>Sistema de Controle Financeiro &copy; 2023</p>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
